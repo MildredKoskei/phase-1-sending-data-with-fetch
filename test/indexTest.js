@@ -1,23 +1,16 @@
-require( './setup' );
+// rrequire( './setup' );
 const chai = require( 'chai' );
 const spies = require( 'chai-spies' );
 const nock = require( 'nock' );
 chai.use( spies );
-
 const rando = Math.ceil( Math.random() * 1000 )
-
 describe( "submitData()", () => {
   let xhr, requests
   beforeEach( function () {
     window.fetch = require( 'node-fetch' );
-
-
-
     chai.spy.on( window, 'fetch' );
     window.onerror = undefined;
-
   } );
-
   it( "makes a POST request to /users with a name and email", async () => {
     let reqBody
     let headers
@@ -31,10 +24,8 @@ describe( "submitData()", () => {
           ...requestBody
         }
       } );
-
     let name = "Steve"
     let email = "steve@steve.com"
-
     await submitData( name, email )
     expect( window.fetch, "A fetch to the API was not found" )
       .to.have.been.called.with( 'http://localhost:3000/users' );
@@ -51,7 +42,6 @@ describe( "submitData()", () => {
     expect( reqBody.email, "The 'email' property was not found in the request body" )
       .to.eq( "steve@steve.com" )
   } )
-
   it( "handles the POST request response, retrieves the new id value and appends it to the DOM", async function () {
     nock( 'http://localhost:3000' )
       .post( '/users' )
@@ -61,16 +51,12 @@ describe( "submitData()", () => {
           ...requestBody
         }
       } );
-
     let name = "Sam"
     let email = "sam@sam.com"
-
     await submitData( name, email )
-
     expect( document.body.innerHTML )
       .to.include( rando )
   } );
-
   it( "handles a failed POST request using catch, appends the error message to the DOM", async function () {
     let message = 'Unauthorized Access'
     nock( 'http://localhost:3000' )
@@ -79,10 +65,8 @@ describe( "submitData()", () => {
         message: message,
         code: '401',
       } )
-
     let name = "Jim"
     let email = "jim@jim.com"
-
     await submitData( name, email )
     expect( document.body.innerHTML )
       .to.include( message )
